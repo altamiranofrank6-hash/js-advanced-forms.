@@ -1,6 +1,9 @@
 const formulario = document.getElementById("formulario");
 const campos = formulario.querySelectorAll("input, select");
 
+const password = document.getElementById("password");
+const confirmar = document.getElementById("confirmar");
+
 function actualizarEstadoVisual(campo) {
     if (campo.checkValidity()) {
         campo.classList.remove("input-error");
@@ -11,8 +14,22 @@ function actualizarEstadoVisual(campo) {
     }
 }
 
+function validarPassword() {
+    if (password.value !== confirmar.value) {
+        confirmar.setCustomValidity("Las contraseñas no coinciden");
+    } else {
+        confirmar.setCustomValidity("");
+    }
+
+    actualizarEstadoVisual(confirmar);
+}
+
 campos.forEach(campo => {
     campo.addEventListener("input", () => {
+        if (campo === password || campo === confirmar) {
+            validarPassword();
+        }
+
         actualizarEstadoVisual(campo);
     });
 
@@ -21,4 +38,27 @@ campos.forEach(campo => {
             campo.reportValidity();
         }
     });
+});
+
+formulario.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    validarPassword();
+
+    if (formulario.checkValidity()) {
+        const formData = {};
+
+        campos.forEach(campo => {
+            if (campo.type === "checkbox") {
+                formData[campo.id] = campo.checked;
+            } else {
+                formData[campo.id] = campo.value;
+            }
+        });
+
+        console.table(formData);
+        alert("Formulario enviado correctamente. Revisa la consola con F12.");
+    } else {
+        formulario.reportValidity();
+    }
 });
