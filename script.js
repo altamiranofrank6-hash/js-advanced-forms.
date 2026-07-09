@@ -58,6 +58,13 @@ formulario.addEventListener("submit", (e) => {
 
         console.table(formData);
         alert("Formulario enviado correctamente. Revisa la consola con F12.");
+        formulario.reset();
+
+        campos.forEach(campo => {
+            campo.classList.remove("input-error");
+            campo.classList.remove("input-success");
+        });
+
     } else {
         formulario.reportValidity();
     }
